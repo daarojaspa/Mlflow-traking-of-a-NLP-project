@@ -1,0 +1,6 @@
+artifact_location: file:///home/dan/PLATZI/data/MLops/localMlflow/mlruns/180289965211464282
+creation_time: 1746641639651
+experiment_id: '180289965211464282'
+last_update_time: 1746641639651
+lifecycle_stage: active
+name: iris_Experiment

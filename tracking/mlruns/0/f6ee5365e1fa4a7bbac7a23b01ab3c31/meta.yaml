@@ -1,0 +1,15 @@
+artifact_uri: file:///home/dan/PLATZI/data/MLops/localMlflow/tracking/mlruns/0/f6ee5365e1fa4a7bbac7a23b01ab3c31/artifacts
+end_time: 1748270273115
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f6ee5365e1fa4a7bbac7a23b01ab3c31
+run_name: MultinomialNB
+run_uuid: f6ee5365e1fa4a7bbac7a23b01ab3c31
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748270241506
+status: 3
+tags: []
+user_id: dan

@@ -1,0 +1,15 @@
+artifact_uri: file:///home/dan/PLATZI/data/MLops/localMlflow/tracking/mlruns/0/741b4faf54274df3855cd978824f683f/artifacts
+end_time: 1748271321162
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 741b4faf54274df3855cd978824f683f
+run_name: LogisticRegressionCVSmote
+run_uuid: 741b4faf54274df3855cd978824f683f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748271295358
+status: 3
+tags: []
+user_id: dan

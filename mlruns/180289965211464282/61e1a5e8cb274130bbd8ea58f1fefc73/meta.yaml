@@ -1,0 +1,15 @@
+artifact_uri: file:///home/dan/PLATZI/data/MLops/localMlflow/mlruns/180289965211464282/61e1a5e8cb274130bbd8ea58f1fefc73/artifacts
+end_time: 1746642130575
+entry_point_name: ''
+experiment_id: '180289965211464282'
+lifecycle_stage: active
+run_id: 61e1a5e8cb274130bbd8ea58f1fefc73
+run_name: example1
+run_uuid: 61e1a5e8cb274130bbd8ea58f1fefc73
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1746642130349
+status: 4
+tags: []
+user_id: dan

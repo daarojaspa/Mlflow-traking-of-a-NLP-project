@@ -1,0 +1,15 @@
+artifact_uri: file:///home/dan/PLATZI/data/MLops/localMlflow/tracking/mlruns/0/e2a225c7842b4dc5b5b8c60de58714d7/artifacts
+end_time: 1748272206573
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e2a225c7842b4dc5b5b8c60de58714d7
+run_name: DecisionTreeClassifierCV
+run_uuid: e2a225c7842b4dc5b5b8c60de58714d7
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748272185093
+status: 3
+tags: []
+user_id: dan
