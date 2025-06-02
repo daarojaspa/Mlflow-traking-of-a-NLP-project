@@ -1,7 +1,7 @@
 """ THIS file contains all the utils functions for the orchestration, functions that are not tasks or flows"""
 
 import os
-from config import DATA_PATH_PROCESSED
+from config import PATH
 import pickle
 import pandas as pd
 

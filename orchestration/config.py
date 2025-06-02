@@ -4,9 +4,9 @@ PATH="/home/dan/PLATZI/data/MLops/localMlflow/orchestration/Data/Processed"
 #version of the data
 VERSION=2
 #languaje for the input parameter for  the text processing class
-LANGUAJE="english"
+LANGUAGE="english"
 #file data name for the input for the text processing class
-FILE_NAME_DATA="english_clasification_english"
+FILE_NAME_DATA="tickets_classification_eng"
 #parameters took it from mlflow register of the best model
 PARAMETERS_MODEL = {
     "C": 1.0,
