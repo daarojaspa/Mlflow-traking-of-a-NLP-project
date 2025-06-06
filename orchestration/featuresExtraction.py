@@ -94,7 +94,7 @@ class FeatureExtraction:
     def run(self, data_path_processed: str, data_version: int):
         df_tickets = self.read_csv(
             path=data_path_processed,
-            file_name=f"tickets_classification_eng_{data_version}.csv",
+            file_name=f"tickets_classification_eng{data_version}.csv",
         )
         self.fit(df_tickets)
         extracted_topics = self.topic_modeling_nmf(n_components=4)
@@ -108,7 +108,7 @@ class FeatureExtraction:
             file_name=f"topic_mapping_{data_version}.json",
         )
         self.save_df_to_csv(
-            df_tickets, data_path_processed, f"tickets_inputs_eng_{data_version}.csv"
+            df_tickets, data_path_processed, f"tickets_inputs_eng{data_version}.csv"
         )
 
 

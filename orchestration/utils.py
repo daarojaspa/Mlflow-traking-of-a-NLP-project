@@ -14,12 +14,12 @@ def labels_decode (labels:pd.Series,idx2labels:dict)->pd.Series:
   labels (pd.Series): series with the labels decoded
   """
   return labels.map(idx2labels)
-def save_oikle(data:object,filename:str)->None:
-  filepath=os.path.join(DATA_PATH_PROCESSED,f"{filename}.pkl")
+def save_pickle(data:object,filename:str)->None:
+  filepath=os.path.join(PATH,f"{filename}.pkl")
   with open(filepath,'wb')as file:
     pickle.dump(data,file)
   
-def load_pikle(data:object,filename:str)->object:
+def load_picDATAkle(data:object,filename:str)->object:
   """
     This function loads data from a pickle file.
     Args:
@@ -27,7 +27,7 @@ def load_pikle(data:object,filename:str)->object:
     Returns:
         data (object): data loaded from the pickle file.
     """
-  filepath = os.path.join(DATA_PATH_PROCESSED, f"{filename}.pkl")
+  filepath = os.path.join(PATH, f"{filename}.pkl")
   with open(filepath, 'rb') as file:
         data = pickle.load(file)
   return data

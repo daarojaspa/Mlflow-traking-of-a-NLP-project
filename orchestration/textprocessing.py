@@ -120,7 +120,7 @@ class TextProcessing:
     def run(self, file_name: str, version: int):
         """Runs the entire text processing pipeline."""
         name_data_input = f"{file_name}"
-        PATH_DATA_RAW = "tracking/data/data_raw"
+        PATH_DATA_RAW = "/home/dan/PLATZI/data/MLops/localMlflow/tracking/data/data_raw"
         PATH_DATA_PROCESSED = "/home/dan/PLATZI/data/MLops/localMlflow/orchestration/Data/Processed"
         # reading JSON data
         data_tickets = self.read_json(
@@ -148,9 +148,3 @@ class TextProcessing:
             file_name=f"{file_name}_{version}.csv",
         )
         self.logger.info(f"Data successfully saved to {PATH_DATA_PROCESSED}")
-
-
-# TODO: ejecutar método run en clase de orchestrator
-if __name__ == "__main__":
-    text_processing = TextProcessing(language="english")
-    text_processing.run(file_name="tickets_classification_eng", version=2)

@@ -1,3 +1,4 @@
+#first run text proccesing and then feture extraction  Global variables for this file in config.py
 # Standard library imports
 import os
 import warnings
@@ -24,6 +25,15 @@ from textprocessing import TextProcessing
 
 warnings.filterwarnings("ignore")
 
+def decode_labels(labels: pd.Series, idx2label: dict) -> pd.Series:
+    """This function decode the labels into idx
+    Args:
+      labels (pd.Series): series with the labels
+      idx2label (dict): dictionary with the mapping
+    Returns:
+      labels (pd.Series): series with the labels decoded
+    """
+    return labels.map(idx2label)
 
 @task(retries=3, retry_delay_seconds=2,
       name="text_processing_task",
