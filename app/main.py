@@ -15,37 +15,55 @@ label_mapping = {
     "1": "Credit Report or Prepaid Card",
     "2": "Mortgage/Loan"}
 
-class sentence(BaseModel):
-    #difines data structure for each imput
-    client_name:str
-    text:str
+# define data structure for each input 
+class Sentence(BaseModel):
+    client_name: str
+    text: str 
+
+# define data structure for request  of predictions sending a list of texts
 class ProcessTextRequestModel(BaseModel):
-    sentences:list[sentence]
+    sentences: list[Sentence]
+
 #entrypoint
-@app.post("/predict")
-async def read_root(data:ProcessTextRequestModel):
-    session=Session(engine)
-    model=joblib.load("model.pkl")
-    pred_list=[]
-    for sentence in data.sentences:
-        processed_data_vectoriced=preprocessing_fn(sentence.text)
-        X_dense =[sparse_matrix.toArroay() for sparse_matrix in processed_data_vectoriced]
-        X_dense=np.vstack(X_dense)
-        preds=model.predicts(X_dense)
-        decoded_predictions= label_mapping[str(preds[0])]
-        #create object with predictions
-        prediction_tikets=PredictionsTickets(
+@app.post("/predict")#inicializacion y definicion de rutas clave
+async def read_root(data: ProcessTextRequestModel):
+
+    session = Session(engine) #interaccion con bd conexion creada mediante el engine
+    
+    model = joblib.load("model.pkl")
+
+    preds_list = []
+
+    for sentence in data.sentences: 
+        processed_data_vectorized = preprocessing_fn(sentence.text)
+        X_dense = [sparse_matrix.toarray() for sparse_matrix in processed_data_vectorized]
+        X_dense = np.vstack(X_dense) 
+
+        preds = model.predict(X_dense)
+        decoded_predictions = label_mapping[str(preds[0])]
+
+        # create object with predictions
+        prediction_ticket = PredictionsTickets(
             client_name=sentence.client_name,
-            predictions=decoded_predictions
+            prediction=decoded_predictions
         )
-        pprint(prediction_ticket)
-        pred_list.ppend(
-            {
-                "client_name":sentence.client_name,
-                "prediction":decoded_predictions
-            }
-        )
-        session.add(prediction_tikets)
-        session.commit#bulk
-        session.close
-        return {"predictions":pred_list}
+        
+        print(prediction_ticket)
+
+        preds_list.append({
+            "client_name": sentence.client_name,
+            "prediction": decoded_predictions
+        })
+        
+        session.add(prediction_ticket)
+
+    session.commit() # bulk
+    session.close()
+
+    return {"predictions": preds_list}
+
+
+#initial event of app - db initialization 
+@app.on_event("startup")
+async def startup():
+    create_db_and_tables()
