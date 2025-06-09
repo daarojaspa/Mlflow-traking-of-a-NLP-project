@@ -24,7 +24,7 @@ from featuresExtraction import FeatureExtraction
 from textprocessing import TextProcessing
 
 warnings.filterwarnings("ignore")
-
+mlflow.set_tracking_uri("http://127.0.0.1:8080")
 def decode_labels(labels: pd.Series, idx2label: dict) -> pd.Series:
     """This function decode the labels into idx
     Args:
