@@ -2,7 +2,7 @@ import joblib
 import numpy as np
 from fastapi import FastAPI
 from pydantic import BaseModel
-from app.db import engine, create_db_and_tables, PredictionsTickets
+from db.py import engine, create_db_and_tables, PredictionsTickets
 from app.utils import preprocessing_fn
 from sqlmodel import Session, select
 from enum import Enum
@@ -36,8 +36,11 @@ async def read_root(data: ProcessTextRequestModel):
 
     for sentence in data.sentences: 
         processed_data_vectorized = preprocessing_fn(sentence.text)
+        # the vectorizers spilt a  sparce matrix, going to a dense 
+        #impruve memory usage and processing
         X_dense = [sparse_matrix.toarray() for sparse_matrix in processed_data_vectorized]
         X_dense = np.vstack(X_dense) 
+        #if   n predictions are needed  you cant pasthem as a  row but as a column
 
         preds = model.predict(X_dense)
         decoded_predictions = label_mapping[str(preds[0])]

@@ -1,4 +1,4 @@
-from .config import settings
+from .config import Settings
 
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
@@ -27,3 +27,4 @@ def create_db_and_tables():
     in the database.
     """
     SQLModel.metadata.create_all(engine)
+settings= Settings
