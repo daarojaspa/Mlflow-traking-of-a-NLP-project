@@ -1,3 +1,4 @@
+#none of the following methods implements statistics. not possible dataleakage then.
 import json
 import os
 import pandas as pd
@@ -10,7 +11,7 @@ from nltk import pos_tag
 import logging
 import warnings
 import datetime
-
+from sklearn.model_selection import train_test_split
 warnings.filterwarnings("ignore")
 
 
@@ -51,7 +52,8 @@ class TextProcessing:
         return lemmatized_tokens
 
     def pos_tagging(self, tokens: list):
-        """This method is used to pos_tagging the text"""
+        """This method is used to pos_tagging the text extracting only nouns
+        for postirior topyc  identification"""
         tagged = pos_tag(tokens)
         nouns = [word for word, pos in tagged if pos == "NN"]
         return " ".join(nouns)
@@ -89,7 +91,7 @@ class TextProcessing:
         return df_tickets
 
     def data_transform(self, df: pd.DataFrame):
-        """This method is used to transform the data to a vector"""
+        """This method is used to transform the data  into a new data frame preprocessed for down stream tasks"""
         df = df[
             [
                 "_source.complaint_what_happened",
@@ -123,6 +125,7 @@ class TextProcessing:
         PATH_DATA_RAW = "tracking/data/data_raw"
         PATH_DATA_PROCESSED = "tracking/data/data_processed"
         # reading JSON data
+        # the raw data comes from a JSON
         data_tickets = self.read_json(
             path=PATH_DATA_RAW, file_name=f"{name_data_input}.json"
         )
@@ -149,8 +152,18 @@ class TextProcessing:
         )
         self.logger.info(f"Data successfully saved to {PATH_DATA_PROCESSED}")
 
+    def split (self, path: str, file_name: str):
+        """this metho is not called in the run method, it takes the run output and split it into 
+        train and test  datasets to avoid data leakage from the topic modeling proces in the feature extraction file"""
+        X=self.read_csv(path,file_name)
+        X_train, X_test = train_test_split(X, test_size=0.2, random_state=42)
+        self.save_processed_data(X_train,path,"training_split_for_featureExtraction.csv")
+        self.save_processed_data(X_test,path,"test_split_for_modelCreation.csv")
 
 # TODO: ejecutar método run en clase de orchestrator
 if __name__ == "__main__":
     text_processing = TextProcessing(language="english")
-    text_processing.run(file_name="tickets_classification_eng", version="1")
+    text_processing.run(file_name="tickets_classification_eng", version="2")
+    PATH_DATA_PROCESSED = "tracking/data/data_processed"
+    
+    text_processing.split(PATH_DATA_PROCESSED,"tickets_classification_eng_2.csv")
