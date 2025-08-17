@@ -14,6 +14,7 @@ warnings.filterwarnings("ignore")
 class FeatureExtraction:
     def __init__(self) -> None:
         self.tfidf = TfidfVectorizer(min_df=2, max_df=0.95)
+        #tool that ignores to uncummon words and too repetitive words across documents
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
@@ -24,15 +25,18 @@ class FeatureExtraction:
         return df
 
     def fit(self, df: pd.DataFrame) -> None:
-        """Fits the TF-IDF vectorizer for a Document-Term Matrix."""
+        """Fits the TF-IDF vectorizer for a Document-Term Matrix.
+        the incomming data frame should have a column  named processed_text"""
+        
         # be sure not use NaN values
         self.df = df
         self.df = self.df.dropna(subset=["processed_text"])
+
         self.dtm = self.tfidf.fit_transform(self.df["processed_text"])
         len_vocab = len(self.tfidf.vocabulary_)
         self.logger.info(f"TF-IDF vectorizer fitted with {len_vocab}  unique words")
 
-    def topic_modeling_nmf(self, n_components: int, num_words: int = 15) -> list:
+    def topic_modeling_nmf(self, n_components: int, num_words: int = 10) -> list:
         """Performs topic modeling using NMF and returns a list of topics.
 
         Args:
@@ -43,11 +47,11 @@ class FeatureExtraction:
             list: List of strings, each string represents a topic consisting of top words.
         """
         self.nmf = NMF(n_components=n_components, random_state=123)
-        self.nmf.fit(self.dtm)
-        self.W = self.nmf.fit_transform(self.dtm)
-        self.H = self.nmf.components_
+        #self.nmf.fit(self.dtm) #document term matrix
+        self.W = self.nmf.fit_transform(self.dtm) # Rows= documents, columns=topic per document
+        self.H = self.nmf.components_ #Rows = topics, columns = weigth per word per topic
         vocab = np.array(self.tfidf.get_feature_names_out())
-        top_words = lambda t: [vocab[i] for i in np.argsort(t)[: -num_words - 1 : -1]]
+        top_words = lambda t: [vocab[i] for i in np.argsort(t)[: -num_words - 1 : -1]] #returns the indexs that will sort the words by weigth
         topic_words = [top_words(t) for t in self.H]
         topics = [" ".join(t) for t in topic_words] # type: ignore
         return topics
@@ -62,7 +66,7 @@ class FeatureExtraction:
         df_doc_topics = pd.DataFrame(
             np.round(self.W, 2), columns=col_names, index=tickets_names
         )
-        top_topics = np.argmax(self.df.values, axis=1)
+        top_topics = np.argmax(self.W, axis=1)
         df_doc_topics["relevant_topics"] = top_topics
         print(df_doc_topics.head())
         self.df["relevant_topics"] = top_topics
@@ -94,10 +98,10 @@ class FeatureExtraction:
     def run(self, data_path_processed: str, data_version: int):
         df_tickets = self.read_csv(
             path=data_path_processed,
-            file_name=f"tickets_classification_eng_{data_version}.csv",
+            file_name=f"training_split_for_featureExtraction.csv",
         )
         self.fit(df_tickets)
-        extracted_topics = self.topic_modeling_nmf(n_components=4)
+        extracted_topics = self.topic_modeling_nmf(n_components=3)
         for idx, topic in enumerate(extracted_topics):
             print(f"Topic {idx}: {topic}")
         df_tickets = self.create_topics()
@@ -118,3 +122,5 @@ if __name__ == "__main__":
     data_path_processed = "tracking/data/data_processed"
     data_version = 1
     feature_extractor_processor.run(data_path_processed, data_version)
+    #after runnin the first time without  proper labeling, que tickets asociated with one number where redes and a commun team was stracted by a human. then the 
+    #dictionary for mapping was hard coded here to do a correct label of the tickets

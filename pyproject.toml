@@ -20,6 +20,8 @@ transformers = "^4.35.2"
 torch = "^2.1.1"
 boto3 = "^1.33.6"
 imbalanced-learn = "^0.13.0"
+psycopg2-binary = "^2.9.10"
+python-dotenv = "^1.1.0"
 
 
 [build-system]
