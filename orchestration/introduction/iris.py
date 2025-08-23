@@ -4,6 +4,12 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import pprint
+
+"""as you wold see a task is to wrap a function that you had build, adding to it meta data
+for registy and  debugging, like:
+    - name  -description    -tags   -logprints
+but  also giving it the posibility to be outomaticly re run in case of a  random  faliure, 
+with the retries and the retry_delay_seconds  arguments"""
 @task (
     name="load iris Dataset",
     tags=["data_ingestion"],
@@ -35,7 +41,8 @@ def train(X_train:list,X_test:list,y_train:list,y_test:list)->str:
     accuracy=model.score(X_test,y_test)
     pprint.pprint("el accuracy es :"+ str(accuracy))
     return f"model train with accuray:{accuracy}"
-    
+    """A flow is same as a task but for the function  usually called  Run
+    where you call all the other functions in the order you need to run your hole pipe line"""
 @flow(
     retries=3,
     retry_delay_seconds=5,
@@ -49,3 +56,6 @@ def iris_clasification()->None:
 
 
 iris_clasification()
+"""now to run this flow you need a premade prefect server runnng, poetry run prefect server start
+. and now
+just execute the script with """

@@ -1,1 +1,99 @@
-.env
+# -------------------------------
+# OS and Editor junk
+# -------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.tmp
+*.log
+
+# VS Code
+.vscode/
+.code-workspace
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+.profile_default/
+__pycache__/
+
+# -------------------------------
+# Python
+# -------------------------------
+*.pyc
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+*.manifest
+*.spec
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Build / Packaging
+build/
+dist/
+.eggs/
+*.egg-info/
+
+# -------------------------------
+# Data science outputs
+# -------------------------------
+# Large datasets (keep them out of git, store in DVC, MLflow, S3, etc.)
+*.csv
+*.tsv
+*.parquet
+*.feather
+*.h5
+*.db
+*.sqlite
+*.pkl
+*.joblib
+*.npy
+*.npz
+
+# Model artifacts
+*.onnx
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.sav
+
+# Results / outputs
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+
+# -------------------------------
+# MLflow / Experiment tracking
+# -------------------------------
+mlruns/
+mlartifacts/
+mlflow.db
+backend.db
+localMlflow/
+
+# Grafana configs (ignore completely so Git won’t try to delete them)
+localMlflow/config/grafana_*.yaml
+
+# -------------------------------
+# Other
+# -------------------------------
+*.tar.gz
+*.zip
+*.gz
+*.bz2
+*.xz
+linter_report.txt
+# Ignore everything in hidden folders (except .git itself)
+.*
+!.gitignore
+!.gitattributes

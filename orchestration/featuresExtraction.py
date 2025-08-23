@@ -94,7 +94,7 @@ class FeatureExtraction:
     def run(self, data_path_processed: str, data_version: int):
         df_tickets = self.read_csv(
             path=data_path_processed,
-            file_name=f"tickets_classification_eng{data_version}.csv",
+            file_name=f"training_split_for_featureExtraction_v{data_version}.csv",
         )
         self.fit(df_tickets)
         extracted_topics = self.topic_modeling_nmf(n_components=4)
@@ -115,6 +115,8 @@ class FeatureExtraction:
 # TODO: ejecutar run en clase de orquestación
 if __name__ == "__main__":
     feature_extractor_processor = FeatureExtraction()
-    data_path_processed = "/home/dan/PLATZI/data/MLops/localMlflow/orchestration/Data/Processed"
+    #estoo deberia ser  con os hassta almenos donde esta este file
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_path_processed = os.path.join(script_dir, "Data", "Processed")
     data_version = 2
     feature_extractor_processor.run(data_path_processed, data_version)

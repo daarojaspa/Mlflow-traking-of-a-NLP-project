@@ -22,7 +22,8 @@ boto3 = "^1.33.6"
 imbalanced-learn = "^0.13.0"
 psycopg2-binary = "^2.9.10"
 python-dotenv = "^1.1.0"
-
+bertopic = "^0.16.0"
+sentence-transformers = "^2.2.2"
 
 [build-system]
 requires = ["poetry-core"]

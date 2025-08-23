@@ -1,14 +1,33 @@
-# Repo overvew
+# Text tickets clasificator
 
-introMlflow.ipynb: is a notebook where i  explain the basic usage of the mlflow traking uris  and loging
+## Overview
+This project explores an NLP pipeline for support ticket classification.  
+The goal is to build a reproducible workflow that includes:  
+- Data preprocessing and feature extraction.  
+- Experiment tracking using MLflow.  
+- Baseline model comparison to evaluate performance before moving to production.  
 
-utils: In this folder i have 2 python scripts that are involve in the nlp pipeline it is important to run them in ordetr first
- text processing.py (preprocessing of the data) and then featureExtraction.py.
+## Repository Structure
 
-tracking: here is the Data raw and preprocessed that the EDA , and textProcessing, featureExtraction will use
-tracking/base_line.ipynb: after having our tickets_input_n.csv file where  our topics have a correct label humanly made, now we palay using diferent  ml models to see which one has better metrics.
-Data_raw: has a json file, and a little jupyter notebook  where i do a first  esploration of the raw dataset.
-data_processed:the tickets input file that was humanly revew to  do the labeling in a second version  and the vectorizer
-pkl  assets from traking_data_baseline  for the  construction of the next model that will be used in production.
+### Experiments branch
 
-Orchestraition:
+- **introMlflow.ipynb** → Example usage of MLflow tracking URIs and logging.  
+- **utils/**
+  - `textProcessing.py`: Preprocessing (tokenization, stopword removal, stemming, POS tagging).  
+  - `featureExtraction.py`: Feature engineering for downstream tasks.  
+- **tracking/**
+  - `data_raw/`: Original dataset (JSON + first exploration notebook).  
+  - `data_processed/`: Cleaned and labeled dataset, plus vectorizer assets.  
+  - `base_line.ipynb`: Baseline ML models with metrics comparison.  
+
+### Orchestraition
+
+At this point i have found  disconcordance between data in experiments and data here, i whent back and relize that: i wasn using the wrong data set in base line experiments, and that the splitting of the data made   mandatory the use of the same artefacts in trainning  and production, but the data leakage prevention was making  the  way i was storing data messi, so i took this oportunity  to impruve the data labeling process and storage,  putting it in a separate flow, and implementing  pre train models and bert topics to have better labels. i will let the  experiment branch for educational and comparative porpusess
+
+- **orchestration/**: Scripts to run the pipeline end-to-end.  
+
+## Usage
+1. Run preprocessing:  
+   ```bash
+   python utils/textProcessing.py
+## Data

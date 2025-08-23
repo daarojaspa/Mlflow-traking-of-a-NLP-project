@@ -153,12 +153,12 @@ class TextProcessing:
         self.logger.info(f"Data successfully saved to {PATH_DATA_PROCESSED}")
 
     def split (self, path: str, file_name: str):
-        """this metho is not called in the run method, it takes the run output and split it into 
+        """this method is not called in the run method, it takes the run output and split it into 
         train and test  datasets to avoid data leakage from the topic modeling proces in the feature extraction file"""
         X=self.read_csv(path,file_name)
         X_train, X_test = train_test_split(X, test_size=0.2, random_state=42)
         self.save_processed_data(X_train,path,"training_split_for_featureExtraction.csv")
-        self.save_processed_data(X_test,path,"test_split_for_modelCreation.csv")
+        self.save_processed_data(X_test,path,"test_split_for_serving.csv")
 
 # TODO: ejecutar método run en clase de orchestrator
 if __name__ == "__main__":
