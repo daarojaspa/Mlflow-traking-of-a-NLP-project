@@ -1,4 +1,6 @@
 import os
+import shutil
+from datetime import datetime
 import json
 import pandas as pd
 import numpy as np
@@ -22,7 +24,8 @@ class TicketTopicModeling:
         self.output_dir = output_dir
         self.train_results = None
         self.test_results = None
-        self.split_dir = None  # will store where the splits are saved
+        self.fileDir = os.path.dirname(os.path.abspath(__file__))
+# will store where the splits are saved
 
     def read_json(self, path: str, file_name: str) -> pd.DataFrame:
         """
@@ -75,26 +78,43 @@ class TicketTopicModeling:
 
     def split(self, df: pd.DataFrame, test_size: float = 0.3, random_state: int = 42):
         """
-        Splits the DataFrame into train/test sets and saves them into timestamped folder.
-        return the df splotted
+        Splits the DataFrame into train/test sets and saves them into both a timestamped
+        folder and a 'latest' folder for easy access.
+        Returns (train_df, test_df).
         """
         train_df, test_df = train_test_split(
             df, test_size=test_size, random_state=random_state
         )
 
+        self.save_data_csv({'train.csv': train_df, 'test.csv': test_df})
+        print(f"✅ Train and test sets saved to {self.output_dir} and updated 'latest'")
+        return train_df, test_df
+
+
+    def save_data_csv(self, filenames: dict, subdir: str = "splitted"):
+        """
+        Save multiple DataFrames to CSV files inside ../Data/<subdir>.
+        
+        filenames: dict[str, pd.DataFrame], e.g. {'train.csv': train_df}
+        subdir: which subfolder inside ../Data (default = 'splitted')
+        """
         # Create timestamped folder
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.split_dir = os.path.join(self.output_dir,'splitted', timestamp)
-        os.makedirs(self.split_dir, exist_ok=True)
+        base_dir = os.path.join(self.fileDir, f"../Data/{subdir}")
+        self.output_dir = os.path.join(base_dir, timestamp)
+        os.makedirs(self.output_dir, exist_ok=True)
 
-        # Save CSVs
-        train_path = os.path.join(self.split_dir, "train.csv")
-        test_path = os.path.join(self.split_dir, "test.csv")
-        train_df.to_csv(train_path, index=False)
-        test_df.to_csv(test_path, index=False)
+        # Save CSVs in timestamped folder
+        for name, df in filenames.items():
+            path = os.path.join(self.output_dir, name)
+            df.to_csv(path, index=False)
 
-        print(f"Train and test sets saved to {self.split_dir}")
-        return test_df,train_df
+        # Update "latest" folder (clear it first, then copy new files)
+        latest_dir = os.path.join(base_dir, "latest")
+        if os.path.exists(latest_dir):
+            shutil.rmtree(latest_dir)  # remove old "latest"
+        shutil.copytree(self.output_dir, latest_dir)
+
 
     def embedding_creation(self, df: pd.DataFrame, text_column: str = "complaint_what_happened") -> np.ndarray:
         """
@@ -114,22 +134,43 @@ class TicketTopicModeling:
 
         return train_embeddings, train_df["complaint_what_happened"].tolist(), test_embeddings, test_df["complaint_what_happened"].tolist()
 
-    def BERT_modeling(self, train_embed: np.ndarray, train_texts: list, test_embed: np.ndarray, test_texts: list):
-        """
-        Trains BERTopic separately on train and test sets.
-        """
-        topic_model_train = BERTopic()
-        topics_train, probs_train = topic_model_train.fit_transform(train_embed, train_texts)
+    def bert_modeling(self, train_embeddings, train_texts, test_embeddings, test_texts):
+            """Run BERTopic modeling using precomputed embeddings and texts"""
+            topic_model= BERTopic()
+            topics_train, probs_train = topic_model.fit_transform(
+                train_texts, train_embeddings
+            )
+            info_train = topic_model.get_topic_info()
+            train_label_map = dict(zip(info_train["Topic"], info_train["Name"]))
+            topics_test, probs_test = topic_model.fit(
+                test_texts, test_embeddings
+            )
+            
 
-        topic_model_test = BERTopic()
-        topics_test, probs_test = topic_model_test.fit_transform(test_embed, test_texts)
+    # Create labeled DataFrames with human-readable labels
+            train_labeled = pd.DataFrame({
+                "text": train_texts,
+                "topic": topics_train,
+                "probability": probs_train,
+            })
+            train_labeled["topic_label"] = train_labeled["topic"].map(train_label_map)
 
-        self.train_results = (topic_model_train, topics_train, probs_train)
-        self.test_results = (topic_model_test, topics_test, probs_test)
+            test_labeled = pd.DataFrame({
+                "text": test_texts,
+                "topic": topics_test,
+                "probability": probs_test,
+            })
+            test_labeled["topic_label"] = test_labeled["topic"].map(test_label_map)
 
-        return self.train_results, self.test_results
+            # Save results (now include human-readable labels)
+            self.save_data_csv(
+                {"train_labeled.csv": train_labeled, "test_labeled.csv": test_labeled},
+                subdir="label",
+            )
 
+            return train_labeled, test_labeled
     def run_pipeline(self, path: str, file_name: str):
+        """recives the path to the jason file and the name of the jason file"""
         """
         Full pipeline:
         1. Read JSON
@@ -138,8 +179,16 @@ class TicketTopicModeling:
         4. Create embeddings
         5. Train/test BERTopic
         """
-        df = self.read_json(path, file_name)
-        df = self.data_transform(df)
-        train_path, test_path = self.split(df)
-        train_embed, train_texts, test_embed, test_texts = self.create_train_test_embeddings(train_path, test_path)
-        return self.BERT_modeling(train_embed, train_texts, test_embed, test_texts)
+     
+        raw_df = self.read_json(path, file_name)
+        df = self.data_transform(raw_df)
+
+        train_df, test_df = self.split(df)
+
+        train_embeddings, train_texts, test_embeddings, test_texts = self.create_train_test_embeddings(train_df, test_df)
+
+        train_labeled, test_labeled = self.bert_modeling(
+            train_embeddings, train_texts, test_embeddings, test_texts
+        )
+
+        return train_labeled, test_labeled
