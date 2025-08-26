@@ -1,0 +1,8 @@
+"""this are supose to be the  departments that will handel the complains"""
+
+{
+    "0": "Billing",
+    "1": "Technical Support",
+    "2": "Account Management",
+    "-1": "Other"
+}

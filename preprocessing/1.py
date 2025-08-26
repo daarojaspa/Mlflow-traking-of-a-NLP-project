@@ -123,6 +123,7 @@ class TicketTopicModeling:
         texts = df[text_column].tolist()
         embeddings = self.embedder.encode(texts, show_progress_bar=True)
         print("Embeddings shape:", embeddings.shape)
+        self.save_artifact(self.embedder,"./artifacts/embedders")
         return embeddings
 
     def create_train_test_embeddings(self, train_df: pd.DataFrame, test_df: pd.DataFrame):
@@ -134,6 +135,41 @@ class TicketTopicModeling:
 
         return train_embeddings, train_df["complaint_what_happened"].tolist(), test_embeddings, test_df["complaint_what_happened"].tolist()
 
+    def save_artifact(self,model, subdir: str ):
+        """
+        Saves a BERTopic model into a timestamped folder.
+        or a sentence transformer
+        Parameters
+        ----------
+        topic_model : BERTopic
+            The BERTopic model to save.
+        base_output_dir : str
+            The base directory where the model folder will be created.
+        
+        Returns
+        -------
+        str
+            The full path where the model was saved.
+        """
+        # Create a timestamp for uniqueness
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        base_dir = os.path.join(self.fileDir, f"../Data/{subdir}")
+        self.output_dir = os.path.join(base_dir, timestamp)
+        os.makedirs(self.output_dir, exist_ok=True)
+        
+        # Save the BERTopic model
+        if subdir=="./artifacts/BERT":
+            model.save(self.output_dir,)
+            print(f"✅ bert Model saved at: {self.output_dir}")
+        else:
+            model.save(self.output_dir)
+            print(f"✅ sentence transformer saved at: {self.output_dir}")
+            
+        return self.output_dir
+
+    
+    
+    
     def bert_modeling(self, train_embeddings, train_texts, test_embeddings, test_texts):
             """Run BERTopic modeling using precomputed embeddings and texts"""
             topic_model= BERTopic()
@@ -146,7 +182,8 @@ class TicketTopicModeling:
                 test_texts, test_embeddings
             )
             
-
+    # save modeling bert artifact
+            self.save_topic_model(topic_model,"./artifacts/BERT")
     # Create labeled DataFrames with human-readable labels
             train_labeled = pd.DataFrame({
                 "text": train_texts,
@@ -169,7 +206,7 @@ class TicketTopicModeling:
             )
 
             return train_labeled, test_labeled
-    def run_pipeline(self, path: str, file_name: str):
+    def run(self, path: str, file_name: str):
         """recives the path to the jason file and the name of the jason file"""
         """
         Full pipeline:
