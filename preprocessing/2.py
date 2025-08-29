@@ -148,3 +148,7 @@ class TopicRouter:
         df = self.save_mapping(mapping)
 
         return df
+if __name__== '__main__ ':
+    router=TopicRouter()
+    train, test = router.run("/home/dan/PLATZI/data/MLops/repo/Data/raw", " tickets_classification_eng.json")
+    print(train.head())

@@ -27,15 +27,19 @@ class TicketTopicModeling:
         self.fileDir = os.path.dirname(os.path.abspath(__file__))
 # will store where the splits are saved
 
-    def read_json(self, path: str, file_name: str) -> pd.DataFrame:
+    def read_json(self, path: str, file_name: str, smoke=False) -> pd.DataFrame:
         """
         Reads a JSON file into a pandas DataFrame.
         """
         file_path = os.path.join(path, file_name)
         with open(file_path, "r") as file:
             datos = json.load(file)
-        df_tickets = pd.json_normalize(datos)
-        return df_tickets
+            if smoke:
+                data = pd.json_normalize(datos)[:200]   # just take first 200 for speed
+                return pd.DataFrame(data)
+            else:
+                df_tickets = pd.json_normalize(datos)
+                return df_tickets
 
     def data_transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -159,7 +163,7 @@ class TicketTopicModeling:
         
         # Save the BERTopic model
         if subdir=="./artifacts/BERT":
-            model.save(self.output_dir,)
+            model.save(os.path.join(self.output_dir,'bertTopic.pkl'))
             print(f"✅ bert Model saved at: {self.output_dir}")
         else:
             model.save(self.output_dir)
@@ -178,12 +182,12 @@ class TicketTopicModeling:
             )
             info_train = topic_model.get_topic_info()
             train_label_map = dict(zip(info_train["Topic"], info_train["Name"]))
-            topics_test, probs_test = topic_model.fit(
+            topics_test, probs_test = topic_model.transform(
                 test_texts, test_embeddings
             )
             
     # save modeling bert artifact
-            self.save_topic_model(topic_model,"./artifacts/BERT")
+            self.save_artifact(topic_model,"./artifacts/BERT")
     # Create labeled DataFrames with human-readable labels
             train_labeled = pd.DataFrame({
                 "text": train_texts,
@@ -197,7 +201,7 @@ class TicketTopicModeling:
                 "topic": topics_test,
                 "probability": probs_test,
             })
-            test_labeled["topic_label"] = test_labeled["topic"].map(test_label_map)
+            test_labeled["topic_label"] = test_labeled["topic"].map(train_label_map)
 
             # Save results (now include human-readable labels)
             self.save_data_csv(
@@ -206,7 +210,7 @@ class TicketTopicModeling:
             )
 
             return train_labeled, test_labeled
-    def run(self, path: str, file_name: str):
+    def run(self,smoke_test:bool, path: str, file_name: str):
         """recives the path to the jason file and the name of the jason file"""
         """
         Full pipeline:
@@ -217,7 +221,7 @@ class TicketTopicModeling:
         5. Train/test BERTopic
         """
      
-        raw_df = self.read_json(path, file_name)
+        raw_df = self.read_json(path, file_name,smoke_test)
         df = self.data_transform(raw_df)
 
         train_df, test_df = self.split(df)
@@ -229,3 +233,7 @@ class TicketTopicModeling:
         )
 
         return train_labeled, test_labeled
+if __name__== '__main__':
+    modelator=TicketTopicModeling()
+    train, test = modelator.run(True,"/home/dan/PLATZI/data/MLops/repo/Data/raw", "tickets_classification_eng.json")
+    print(train.head())
