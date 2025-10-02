@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+  - name: Postgres
+    type: postgres
+    access: proxy
+    url: db:5432
+    database: fastapi_traefik
+    user: fastapi_traefik
+    secureJsonData:
+      password: fastapi_traefik
+    isDefault: true

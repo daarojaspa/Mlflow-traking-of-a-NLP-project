@@ -1,0 +1,8 @@
+logger=migrator t=2025-10-02T15:41:38.315420473Z level=info msg="Executing migration" id="add snapshot error_string column"
+logger=migrator t=2025-10-02T15:41:38.328382417Z level=info msg="Migration successfully executed" id="add snapshot error_string column" duration=12.945779ms
+logger=migrator t=2025-10-02T15:41:39.514624016Z level=info msg="Executing migration" id="add cloud_migration_resource.error_code column"
+logger=migrator t=2025-10-02T15:41:39.528602771Z level=info msg="Migration successfully executed" id="add cloud_migration_resource.error_code column" duration=13.971469ms
+logger=plugins.registration t=2025-10-02T15:41:53.379882024Z level=error msg="Could not register plugin" pluginId=table error="plugin table is already registered"
+logger=plugins.initialization t=2025-10-02T15:41:53.379997199Z level=error msg="Could not initialize plugin" pluginId=table error="plugin table is already registered"
+logger=sqlstore.transactions t=2025-10-02T15:41:55.648579287Z level=info msg="Database locked, sleeping then retrying" error="database is locked" retry=0
+logger=sqlstore.transactions t=2025-10-02T15:55:44.139249537Z level=info msg="Database locked, sleeping then retrying" error="database is locked" retry=0

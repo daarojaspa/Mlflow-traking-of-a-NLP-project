@@ -1,3 +1,91 @@
+*.env
+*.pem
+*.sql
+# -----------------
+# Python
+# -----------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+.eggs/
+*.log
+
+# -----------------
+# Virtual environments
+# -----------------
 .env
-.pem
-.sql
+.venv
+env/
+venv/
+ENV/
+
+# -----------------
+# Jupyter
+# -----------------
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# -----------------
+# Data files
+# -----------------
+data/
+*.csv
+*.tsv
+*.json
+*.xml
+*.parquet
+*.feather
+*.h5
+*.hdf5
+*.npz
+*.npy
+*.pickle
+*.pkl
+
+# -----------------
+# Models
+# -----------------
+*.pt
+*.pth
+*.onnx
+*.joblib
+*.pb
+*.ckpt
+*.tflite
+
+# -----------------
+# Large archives
+# -----------------
+*.tar
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# -----------------
+# IDE & editor configs
+# -----------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# -----------------
+# System files
+# -----------------
+.DS_Store
+Thumbs.db
+
+# -----------------
+# MLflow / experiments / cache
+# -----------------
+mlruns/
+wandb/
+.cache/
+outputs/
+logs/
+
