@@ -2,7 +2,7 @@
 name = "localMLflow"
 version = "0.1.0"
 description = ""
-authors = ["Maria Durango <camiladurangob@gmail.com>"]
+authors = ["Daarojaspa  <daarojaspa@unal.edu.co>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
