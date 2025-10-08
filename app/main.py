@@ -30,7 +30,7 @@ async def read_root(data: ProcessTextRequestModel):
 
     session = Session(engine)
     
-    model = joblib.load("model_lr.pkl")
+    model = joblib.load("app/model_lr.pkl")
 
     preds_list = []
 
