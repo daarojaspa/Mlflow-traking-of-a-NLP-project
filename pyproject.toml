@@ -1,29 +1,50 @@
 [tool.poetry]
-name = "localMLflow"
-version = "0.1.0"
-description = ""
-authors = ["Maria Durango <camiladurangob@gmail.com>"]
+name = "banking_complain_classifier"
+version = "1.0.0"
+description = "End-to-end MLOps project with modular dependency management"
+authors = ["Daarojaspa <daarojaspa@unal.edu.co>"]
 readme = "README.md"
-
+# pakage-mode=False
 [tool.poetry.dependencies]
 python = ">=3.10"
-mlflow = "^2.8.0"
-ipython = "^8.17.2"
-jupyter = "^1.0.0"
+python-dotenv = "^1.1.0"  # Shared env management across stages
+
+# ──────────────────────────────────────────────────────────────
+# 🧱 Feature Engineering
+# ──────────────────────────────────────────────────────────────
+[tool.poetry.group.feature_engineering.dependencies]
+pandas = "^2.2.0"
 seaborn = "^0.13.0"
-xgboost = "^2.0.2"
-hyperopt = "^0.2.7"
-prefect = "^2.14.5"
 nltk = "^3.8.1"
 wordcloud = "^1.9.2"
 transformers = "^4.35.2"
 torch = "^2.1.1"
-boto3 = "^1.33.6"
 imbalanced-learn = "^0.13.0"
+
+# ──────────────────────────────────────────────────────────────
+# 🧪 Experiments (training, tuning, tracking)
+# ──────────────────────────────────────────────────────────────
+[tool.poetry.group.experiments.dependencies]
+mlflow = "^2.8.0"
+xgboost = "^2.0.2"
+hyperopt = "^0.2.7"
+ipython = "^8.17.2"
+jupyter = "^1.0.0"
+
+# ──────────────────────────────────────────────────────────────
+# 🚀 Orchestration Deployment (databases, cloud, APIs)
+# ──────────────────────────────────────────────────────────────
+[tool.poetry.group.orchestration-deployment.dependencies]
+prefect = "^2.14.5"
+boto3 = "^1.33.6"
 psycopg2-binary = "^2.9.10"
-python-dotenv = "^1.1.0"
+fastapi = "^0.115.0"
+uvicorn = "^0.30.0"
 
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+# ──────────────────────────────────────────────────────────────
+# 📊 Monitoring (model & system observability)
+# ──────────────────────────────────────────────────────────────
+[tool.poetry.group.monitoring.dependencies]
+prometheus-client = "^0.20.0"
+plotly = "^5.22.0"
+pandas = "^2.2.0"  # Reused for visualization

@@ -1,14 +1,133 @@
-# Repo overvew
 
-introMlflow.ipynb: is a notebook where i  explain the basic usage of the mlflow traking uris  and loging
+# 📌 Banking Complain Classifier
 
-utils: In this folder i have 2 python scripts that are involve in the nlp pipeline it is important to run them in ordetr first
- text processing.py (preprocessing of the data) and then featureExtraction.py.
+Short description of your project: what the model does, problem it solves, and high-level overview.
 
-tracking: here is the Data raw and preprocessed that the EDA , and textProcessing, featureExtraction will use
-tracking/base_line.ipynb: after having our tickets_input_n.csv file where  our topics have a correct label humanly made, now we palay using diferent  ml models to see which one has better metrics.
-Data_raw: has a json file, and a little jupyter notebook  where i do a first  esploration of the raw dataset.
-data_processed:the tickets input file that was humanly revew to  do the labeling in a second version  and the vectorizer
-pkl  assets from traking_data_baseline  for the  construction of the next model that will be used in production.
+---
 
-Orchestraition:
+## 🚀 Project Workflow
+
+This repository follows the **end-to-end MLOps lifecycle**, organized into stages.
+Each stage has its own **folder structure** and **Git branch** to keep development clean and reproducible.
+
+### 🔧 1. Feature Engineering
+
+* **Branch**: `featureEngineering`
+* **Folder**: `/feature_engineering`
+* **Description**:
+  Contains scripts and notebooks for data cleaning, preprocessing, and feature creation.
+* **Contents**:
+
+  * `data/` → raw and processed datasets
+  * `notebooks/` → exploratory and feature engineering notebooks
+  * `src/features/` → reusable feature engineering functions
+
+---
+
+### 🧪 2. Experimentation
+
+* **Branch**: `experiments`
+* **Folder**: `/experiments`
+* **Description**:
+  Includes experiments with different models, hyperparameters, and evaluation metrics.
+* **Contents**:
+
+  * `notebooks/` → model training & testing
+  * `src/models/` → training scripts
+  * `reports/` → experiment results (metrics, plots)
+  * `config/` → configs for experiments (YAML/JSON)
+
+---
+
+### ⚙️ 3. Deployment
+
+* **Branch**: `deployment`
+* **Folder**: `/deployment`
+* **Description**:
+  Code and infrastructure to serve the model in production.
+* **Contents**:
+
+  * `api/` → FastAPI/Flask app or similar
+  * `docker/` → Dockerfiles for containerization
+  * `infra/` → IaC (Terraform, CloudFormation, etc.)
+  * `scripts/` → CI/CD pipelines
+
+---
+
+### 📊 4. Monitoring
+
+* **Branch**: `monitoring`
+* **Folder**: `/monitoring`
+* **Description**:
+  Tools to monitor model performance, data drift, and system health.
+* **Contents**:
+
+  * `src/monitoring/` → monitoring scripts
+  * `dashboards/` → Grafana/Streamlit dashboards
+  * `alerts/` → configuration for alerts/notifications
+
+---
+
+## 🗂️ Repository Structure
+
+```bash
+project-root/
+│
+├── feature_engineering/
+├── experiments/
+├── deployment/
+├── monitoring/
+├── README.md
+└── requirements.txt
+```
+
+---
+
+## 🌱 Branching Strategy
+
+* `main` → stable code, production-ready
+* `feature-engineering` → preprocessing & features
+* `experiments` → training & validation experiments
+* `deployment` → serving model in the cloud
+* `monitoring` → drift/performance monitoring
+
+---
+
+## 🛠️ How to Use This Repository
+
+1. **Clone repo**
+
+   ```bash
+   git clone <repo-url>
+   cd <repo-name>
+   ```
+2. **Install dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Switch to stage branch**
+
+   ```bash
+   git checkout feature-engineering
+   ```
+4. Follow stage-specific instructions in each folder’s `README.md`.
+
+---
+
+## 📈 Roadmap
+
+* [ ] Feature engineering completed
+* [ ] Experiments documented
+* [ ] Deployment pipeline ready
+* [ ] Monitoring dashboards live
+
+---
+
+## 📚 References
+
+* Tutorial link you are following
+* Docs for ML libraries, cloud provider, etc.
+
+---
+
