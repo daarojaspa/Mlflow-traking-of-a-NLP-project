@@ -1,0 +1,10 @@
+feature_strategy: "bert"
+
+nltk:
+  input_path: "../Data/data_raw/"
+  output_path: "../Data/data_processed/"
+
+bert:
+  input_path: "../Data/data_raw/"
+  output_path: "data/processed_bert/"
+  model_name: "bert-base-uncased"
