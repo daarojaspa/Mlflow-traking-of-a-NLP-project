@@ -1,9 +1,12 @@
+import shutil
+from pathlib import Path
 import os
 import numpy as np
 import pandas as pd
 from datetime import datetime
 from bertopic import BERTopic
-from sentence_transformers import  util
+from sentence_transformers import  util,SentenceTransformer
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 class TopicRouter:
@@ -23,8 +26,8 @@ class TopicRouter:
         self.sentence_transformer=None
 
         # Base directory for saving results
-        self.fileDir = os.path.dirname(os.path.abspath(__file__))
-        self.output_dir = os.path.join(self.fileDir, "../../Data/routed")
+        self.base_dir = os.path.join(str(PROJECT_ROOT), "Data", "routed")
+        self.output_dir = None  # Will be set in save_mapping
 
     # 1. Load the BERTopic model
     def load_model(self):
@@ -44,17 +47,18 @@ class TopicRouter:
         Load a saved SentenceTransformer model from a local directory.
 
         Args:
-            model_dir (str): Path to the folder where the model was saved 
-                            using model.save("path/to/folder").
+            model_dir (str): Path to the folder where the model was saved
+                             using model.save("path/to/folder").
 
         Returns:
             SentenceTransformer: The loaded model ready for inference.
         """
-        if not os.path.exists(model_dir):
-            raise FileNotFoundError(f"Model directory not found: {model_dir}")
-        
-        self.sentence_transformer = SentenceTransformer(model_dir)
-        print(f"✅ Loaded SentenceTransformer model from {model_dir}")
+        model_dir_str = str(model_dir)
+        if not os.path.exists(model_dir_str):
+            raise FileNotFoundError(f"Model directory not found: {model_dir_str}")
+
+        self.sentence_transformer = SentenceTransformer(model_dir_str)
+        print(f"✅ Loaded SentenceTransformer model from {model_dir_str}")
         return self.sentence_transformer
 
     def embed_departments(self):
@@ -72,8 +76,9 @@ class TopicRouter:
     def create_mapping(self):
         if self.topic_embeddings is None or self.dept_embeddings is None:
             raise ValueError("Embeddings not ready. Call get_topic_embeddings() and embed_departments().")
+        valid_topics = self.topic_model.get_topic_info()["Topic"].tolist()
+        valid_topics = [t for t in valid_topics if t != -1]  # exclude noise if needed
 
-        valid_topics = [i for i, emb in enumerate(self.topic_embeddings) if emb is not None]
         results = []
 
         for topic_id in valid_topics:
@@ -110,13 +115,22 @@ class TopicRouter:
     def save_mapping(self, mapping: list):
         df = pd.DataFrame(mapping)
 
-        os.makedirs(self.output_dir, exist_ok=True)
-        
+        # Create timestamped folder
         timestamp = datetime.now().strftime("%Y-%m-%d")  # Year-Month-Day
+        self.output_dir = os.path.join(self.base_dir, timestamp)
+        os.makedirs(self.output_dir, exist_ok=True)
+
         out_path = os.path.join(self.output_dir, f"topic_department_mapping_{timestamp}.csv")
         df.to_csv(out_path, index=False)
 
+        # Update "latest" folder
+        latest_dir = os.path.join(self.base_dir, "latest")
+        if os.path.exists(latest_dir):
+            shutil.rmtree(latest_dir)  # remove old "latest"
+        shutil.copytree(self.output_dir, latest_dir)
+
         print(f"Mapping saved to {out_path}")
+        print(f"Latest copy updated at: {latest_dir}")
         return df
 
 
@@ -149,3 +163,14 @@ class TopicRouter:
         df = self.save_mapping(mapping)
 
         return df
+
+if __name__ == "__main__":
+    model_path=str(PROJECT_ROOT/"Data"/"artifacts"/"BERT"/"latest")
+    sentence_model_dir=str(PROJECT_ROOT/"Data"/"artifacts"/"embedders"/"latest")
+    departments=["Bank Account Services",
+            "Credit Report or Prepaid Card",
+         "Mortgage/Loan"]
+
+    router = TopicRouter(model_path, departments, threshold=0.5)
+    df = router.run(sentence_model_dir)
+    

@@ -125,7 +125,6 @@ class TicketTopicModeling:
         texts = df[text_column].tolist()
         embeddings = self.embedder.encode(texts, show_progress_bar=True)
         print("Embeddings shape:", embeddings.shape)
-        self.save_artifact(self.embedder,"./artifacts/embedders")
         return embeddings
 
     def create_train_test_embeddings(self, train_df: pd.DataFrame, test_df: pd.DataFrame):
@@ -133,6 +132,7 @@ class TicketTopicModeling:
         Loads train/test datasets from CSVs and creates embeddings for each.
         """
         train_embeddings = self.embedding_creation(train_df, "complaint_what_happened")
+        self.save_artifact(self.embedder, "./artifacts/embedders")
         test_embeddings = self.embedding_creation(test_df, "complaint_what_happened")
 
         return train_embeddings, train_df["complaint_what_happened"].tolist(), test_embeddings, test_df["complaint_what_happened"].tolist()
@@ -147,7 +147,7 @@ class TicketTopicModeling:
             The BERTopic model to save.
         base_output_dir : str
             The base directory where the model folder will be created.
-        
+
         Returns
         -------
         str
@@ -158,7 +158,7 @@ class TicketTopicModeling:
         base_dir = os.path.join(self.fileDir, f"../../Data/{subdir}")
         self.output_dir = os.path.join(base_dir, timestamp)
         os.makedirs(self.output_dir, exist_ok=True)
-        
+
         # Save the BERTopic model
         if subdir=="./artifacts/BERT":
             model.save(self.output_dir,serialization='safetensors')
@@ -166,7 +166,14 @@ class TicketTopicModeling:
         else:
             model.save(self.output_dir)
             print(f"✅ sentence transformer saved at: {self.output_dir}")
-            
+
+        # Update "latest" folder (clear it first, then copy new files)
+        latest_dir = os.path.join(base_dir, "latest")
+        if os.path.exists(latest_dir):
+            shutil.rmtree(latest_dir)  # remove old "latest"
+        shutil.copytree(self.output_dir, latest_dir)
+        print(f"✅ Latest copy updated at: {latest_dir}")
+
         return self.output_dir
 
     
