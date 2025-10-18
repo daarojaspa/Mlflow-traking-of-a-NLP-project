@@ -1,0 +1,15 @@
+artifact_uri: file:///home/dan/PLATZI/data/MLops/localMlflow/tracking/mlruns/0/34a59020346a4d9cbe3d74cb2f47e590/artifacts
+end_time: 1748270514394
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 34a59020346a4d9cbe3d74cb2f47e590
+run_name: LogisticRegression
+run_uuid: 34a59020346a4d9cbe3d74cb2f47e590
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1748270497851
+status: 3
+tags: []
+user_id: dan
